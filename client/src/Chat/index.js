@@ -2,8 +2,9 @@ import React, { useState } from 'react'
 import get_data from './together.js'
 
 
+
 const examples = [
-  'Legal Gen document generation',
+  'Welcome to the legal document generation app. Please enter text.',
 
 ]
 const Chat = () => {
@@ -12,6 +13,7 @@ const Chat = () => {
   const [title, setTitle] = useState('');
   const [input, setInput] = useState('');
   const [fileInput, setFileInput] = useState(null);
+  
 
 
 
@@ -104,6 +106,12 @@ const Chat = () => {
       }
     }
   }
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter' && (input.trim() || (fileInput && fileInput.files.length > 0))) {
+      handleSend();
+    }
+  };
+  
 
   return (
     <div className=' h-screen w-screen flex bg-[#050509]'>
@@ -131,7 +139,7 @@ const Chat = () => {
             ))
           }
         </div>
-        <div className='overflow-scroll shadow-lg hide-scroll-bar h-[20%] border-t'>
+        {/* <div className='overflow-scroll shadow-lg hide-scroll-bar h-[20%] border-t'>
           {
             [1].map((item, index) => (
               <div className=' py-3 text-center rounded mt-4 text-lg font-light flex items-center px-8 hover:bg-slate-600 cursor-pointer'>
@@ -140,15 +148,15 @@ const Chat = () => {
                     <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
                     <path d="M11.482 20.924a1.666 1.666 0 0 1 -1.157 -1.241a1.724 1.724 0 0 0 -2.573 -1.066c-1.543 .94 -3.31 -.826 -2.37 -2.37a1.724 1.724 0 0 0 -1.065 -2.572c-1.756 -.426 -1.756 -2.924 0 -3.35a1.724 1.724 0 0 0 1.066 -2.573c-.94 -1.543 .826 -3.31 2.37 -2.37c1 .608 2.296 .07 2.572 -1.065c.426 -1.756 2.924 -1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543 -.94 3.31 .826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.312 .318 1.644 1.794 .995 2.697"></path>
                     <path d="M9 12a3 3 0 1 0 6 0a3 3 0 0 0 -6 0"></path>
-                    {/* <path d="M20 21l2 -2l-2 -2"></path> */}
+                    
                     <path d="M17 17l-2 2l2 2"></path>
                   </svg>
                 </span>
-                Legal hover
+                Youtube 
               </div>
             ))
           }
-        </div>
+        </div> */}
       </div>
       <div className=' w-[80%]'>
         {
@@ -207,7 +215,7 @@ const Chat = () => {
                 <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
               </svg> */}
 
-              <input type='text' onChange={(e) => setInput(e.target.value)} value={input} className='w-full rounded-lg p-4 pr-16 bg-slate-800 text-white' placeholder='Type your message here...' />
+              <input type='text' onChange={(e) => setInput(e.target.value)}onKeyPress={handleKeyPress} value={input} className='w-full rounded-lg p-4 pr-16 bg-slate-800 text-white' placeholder='Type your message here...' />
 
               <label htmlFor="file-upload" className='ml-2 mt-1.5 cursor-pointer'>
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="2 0 24 24" stroke-width="2" stroke="currentColor" className="w-8 h-15">
