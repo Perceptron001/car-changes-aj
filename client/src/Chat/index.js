@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import get_data from './together.js'
 
 
 const examples = [
@@ -11,6 +12,8 @@ const Chat = () => {
   const [title, setTitle] = useState('');
   const [input, setInput] = useState('');
   const [fileInput, setFileInput] = useState(null);
+
+
 
   const handleSend = async () => {
     if (input.trim) {
@@ -39,37 +42,50 @@ const Chat = () => {
       // });
 
       // postman code snippet 
-      var myHeaders = new Headers();
-      
-      myHeaders.append("Content-Type", "text/plain");
-      
+      // var myHeaders = new Headers();
 
-//var raw = "To draft a government contracts agreement, include: parties' names, contract scope, deliverables, payment terms, performance milestones, termination provisions, dispute resolution mechanisms, and compliance with applicable laws and regulations. Tailor the agreement to meet specific government requirements and consult legal counsel for accuracy and compliance.";
+      // myHeaders.append("Content-Type", "text/plain");
+      // //myHeaders.append('origin', "http://192.168.0.124:5005/upshot")
+      // myHeaders.append('Access-Control-Allow-Credentials', 'true')
 
-var requestOptions = {
-  method: 'POST',
-  headers: myHeaders,
-  body: input,
-  redirect: 'follow'
-};
 
-fetch("http://192.168.0.124:5005/upshot",{ mode: 'cors' }, requestOptions)
-  .then(response => response.text())
-  .then(result => console.log(result))
-  .catch(error => console.log('error', error));
-//postman code ends here
+      // //var raw = "To draft a government contracts agreement, include: parties' names, contract scope, deliverables, payment terms, performance milestones, termination provisions, dispute resolution mechanisms, and compliance with applicable laws and regulations. Tailor the agreement to meet specific government requirements and consult legal counsel for accuracy and compliance.";
+
+      // var requestOptions = {
+      //   method: 'POST',
+      //   headers: myHeaders,
+      //   body: input,
+      //   redirect: 'follow',
+      // };
+
+      // fetch("http://192.168.0.124:5005/upshot", requestOptions)
+      //   .then(response => response.text())
+      //   //.then(result => console.log(result))
+      //   .catch(error => console.log('error', error));
+      // //postman code ends here
+      console.log(input)
+      // get_data(input).then(
+      //   (response_data) => {
+      //     // console.log(response_data.choices[0].message.content)
+      //     const readData = response_data.choices[0].message.content  
+
+      //   } 
+      // )
+      const readData = await get_data(input)
 
       //eslint-disable-next-line
-      const readData = response.body.pipeThrough(new TextDecoderStream()).getReader();
-      let aiRes = '';
-      while (true) {
-        const { done, value } = await readData.read();
-        if (done) {
-          break;
-        }
-        aiRes += value;
-        setChat([...chat, { role: 'user', content: input }, { role: 'assistant', content: aiRes }]);
-      }
+      // const readData = response_data.choices[0].message.content  //.body.pipeThrough(new TextDecoderStream()).getReader();
+      // console.log(readData)
+      // let aiRes = '';
+      // while (true) {
+      //   const { done, value } = await readData.read();
+      //   if (done) {
+      //     break;
+      //   }
+      //   aiRes += value;
+      //   setChat([...chat, { role: 'user', content: input }, { role: 'assistant', content: aiRes }]);
+      // }
+      setChat([...chat, { role: 'user', content: input }, { role: 'assistant', content: readData }]);
 
       if (!title) {
         const createTitle = await fetch('http://192.168.0.124:5005/upshot', {
@@ -187,13 +203,13 @@ fetch("http://192.168.0.124:5005/upshot",{ mode: 'cors' }, requestOptions)
         <div className='h-[20%]'>
           <div className='flex flex-col items-center justify-center w-full h-full text-white'>
             <div className='w-[60%] flex justify-center relative'>
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="2 0 24 24" stroke-width="2" stroke="currentColor" className="w-8 h-15">
+              {/* <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="2 0 24 24" stroke-width="2" stroke="currentColor" className="w-8 h-15">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
-              </svg>
+              </svg> */}
 
               <input type='text' onChange={(e) => setInput(e.target.value)} value={input} className='w-full rounded-lg p-4 pr-16 bg-slate-800 text-white' placeholder='Type your message here...' />
 
-              <label htmlFor="file-upload" className='ml-2 cursor-pointer'>
+              <label htmlFor="file-upload" className='ml-2 mt-1.5 cursor-pointer'>
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="2 0 24 24" stroke-width="2" stroke="currentColor" className="w-8 h-15">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M3 21l9-9 9 9" />
                 </svg>
@@ -206,7 +222,7 @@ fetch("http://192.168.0.124:5005/upshot",{ mode: 'cors' }, requestOptions)
                 />
               </label>
 
-              <span className='ml-2 cursor-pointer' onClick={() => (input.trim() || (fileInput && fileInput.files.length > 0)) ? handleSend() : undefined}>
+              <span className='ml-2 mt-4 cursor-pointer' onClick={() => (input.trim() || (fileInput && fileInput.files.length > 0)) ? handleSend() : undefined}>
                 <svg xmlns="http://www.w3.org/2000/svg" className="icon icon-tabler icon-tabler-plus" width="24" height="24" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round">
                   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
                   <path d="M10 14l11 -11"></path>
