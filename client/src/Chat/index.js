@@ -25,18 +25,39 @@ const Chat = () => {
       }
 
 
-      const response = await fetch('http://localhost:8000/api/chat', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          messages: [
-            ...chat,
-            { role: 'user', content: input },
-          ]
-        })
-      });
+      // const response = await fetch('http://192.168.0.124:5005/upshot', {
+      //   method: 'POST',
+      //   headers: {
+      //     'Content-Type': 'raw',
+      //   },
+      //   body: {
+      //     messages: [
+      //       ...chat,
+      //       { role: 'user', content: input },
+      //     ]
+      //   }
+      // });
+
+      // postman code snippet 
+      var myHeaders = new Headers();
+      
+      myHeaders.append("Content-Type", "text/plain");
+      
+
+//var raw = "To draft a government contracts agreement, include: parties' names, contract scope, deliverables, payment terms, performance milestones, termination provisions, dispute resolution mechanisms, and compliance with applicable laws and regulations. Tailor the agreement to meet specific government requirements and consult legal counsel for accuracy and compliance.";
+
+var requestOptions = {
+  method: 'POST',
+  headers: myHeaders,
+  body: input,
+  redirect: 'follow'
+};
+
+fetch("http://192.168.0.124:5005/upshot",{ mode: 'cors' }, requestOptions)
+  .then(response => response.text())
+  .then(result => console.log(result))
+  .catch(error => console.log('error', error));
+//postman code ends here
 
       //eslint-disable-next-line
       const readData = response.body.pipeThrough(new TextDecoderStream()).getReader();
@@ -51,14 +72,14 @@ const Chat = () => {
       }
 
       if (!title) {
-        const createTitle = await fetch('http://localhost:8000/api/title', {
+        const createTitle = await fetch('http://192.168.0.124:5005/upshot', {
           method: 'POST',
           headers: {
-            'Content-Type': 'application/json',
+            'Content-Type': 'raw',
           },
-          body: JSON.stringify({
+          body: {
             title: input,
-          }),
+          },
         });
 
         const title = await createTitle.json();
@@ -163,39 +184,39 @@ const Chat = () => {
             )
         }
 
-<div className='h-[20%]'>
-  <div className='flex flex-col items-center justify-center w-full h-full text-white'>
-    <div className='w-[60%] flex justify-center relative'>
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="2 0 24 24" stroke-width="2" stroke="currentColor" className="w-8 h-15">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
-      </svg>
+        <div className='h-[20%]'>
+          <div className='flex flex-col items-center justify-center w-full h-full text-white'>
+            <div className='w-[60%] flex justify-center relative'>
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="2 0 24 24" stroke-width="2" stroke="currentColor" className="w-8 h-15">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
+              </svg>
 
-      <input type='text' onChange={(e) => setInput(e.target.value)} value={input} className='w-full rounded-lg p-4 pr-16 bg-slate-800 text-white' placeholder='Type your message here...' />
+              <input type='text' onChange={(e) => setInput(e.target.value)} value={input} className='w-full rounded-lg p-4 pr-16 bg-slate-800 text-white' placeholder='Type your message here...' />
 
-      <label htmlFor="file-upload" className='ml-2 cursor-pointer'>
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="2 0 24 24" stroke-width="2" stroke="currentColor" className="w-8 h-15">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M3 21l9-9 9 9" />
-        </svg>
-        <input
-          type='file'
-          id='file-upload'
-          accept='.pdf, .doc, .docx'
-          onChange={(e) => setFileInput(e.target)}
-          className='hidden'
-        />
-      </label>
+              <label htmlFor="file-upload" className='ml-2 cursor-pointer'>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="2 0 24 24" stroke-width="2" stroke="currentColor" className="w-8 h-15">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M3 21l9-9 9 9" />
+                </svg>
+                <input
+                  type='file'
+                  id='file-upload'
+                  accept='.pdf, .doc, .docx'
+                  onChange={(e) => setFileInput(e.target)}
+                  className='hidden'
+                />
+              </label>
 
-      <span className='ml-2 cursor-pointer' onClick={() => (input.trim() || (fileInput && fileInput.files.length > 0)) ? handleSend() : undefined}>
-        <svg xmlns="http://www.w3.org/2000/svg" className="icon icon-tabler icon-tabler-plus" width="24" height="24" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round">
-          <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-          <path d="M10 14l11 -11"></path>
-          <path d="M21 3l-6.5 18a.55 .55 0 0 1 -1 0l-3.5 -7l-7 -3.5a.55 .55 0 0 1 0 -1l18 -6.5"></path>
-        </svg>
-      </span>
-    </div>
-    <small className='text-slate-500 mt-2'>Legal document generation</small>
-  </div>
-</div>
+              <span className='ml-2 cursor-pointer' onClick={() => (input.trim() || (fileInput && fileInput.files.length > 0)) ? handleSend() : undefined}>
+                <svg xmlns="http://www.w3.org/2000/svg" className="icon icon-tabler icon-tabler-plus" width="24" height="24" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round">
+                  <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                  <path d="M10 14l11 -11"></path>
+                  <path d="M21 3l-6.5 18a.55 .55 0 0 1 -1 0l-3.5 -7l-7 -3.5a.55 .55 0 0 1 0 -1l18 -6.5"></path>
+                </svg>
+              </span>
+            </div>
+            <small className='text-slate-500 mt-2'>Legal document generation</small>
+          </div>
+        </div>
 
       </div>
     </div>
